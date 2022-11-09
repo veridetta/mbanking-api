@@ -90,8 +90,21 @@ class UsersController extends Controller
      }
     public function login(Request $request){
         $status="failed";
-        $message="Username atau password salah.";
-        $users=Users::where('username','=',$request->username)->where('password','=',$request->password)->first();
+        $message="Email atau password salah.";
+        $users=Users::where('email','=',$request->email)->where('password','=',$request->password)->first();
+        $kosong=array(
+            'id' => 1,
+            'name' => '',
+            'nik' => 43,
+            'tel' => 257,
+            'card' => 5602242014592959,
+            'email' => '',
+            'username' => '',
+            'status' => '',
+            'created_at' => '-000001-11-30T00:00:00.000000Z',
+            'updated_at' => '-000001-11-30T00:00:00.000000Z',
+            'saldo' => 0,
+        );
         if($users){
             $trans=Transactions::where('users_id','=',$users->id)->orderBy('id','desc')->first();
             if($trans){
@@ -104,7 +117,7 @@ class UsersController extends Controller
             $message='Berhasil login';
             return response()->json(['status'=> $status, 'messages'=>$message, 'data'=> $users]);
         }else{
-            return response()->json(['status'=> $status, 'messages'=>$message, 'data'=> '']);
+            return response()->json(['status'=> $status, 'messages'=>$message, 'data'=> $kosong]);
         }
     }
     public function register(Request $request){
@@ -118,10 +131,23 @@ class UsersController extends Controller
             'password' => 'required',
             'status' => 'required',
         ]);
+        $kosong=array(
+            'id' => 1,
+            'name' => '',
+            'nik' => 43,
+            'tel' => 257,
+            'card' => 5602242014592959,
+            'email' => '',
+            'username' => '',
+            'status' => '',
+            'created_at' => '-000001-11-30T00:00:00.000000Z',
+            'updated_at' => '-000001-11-30T00:00:00.000000Z',
+            'saldo' => 0,
+        );
         $status="failed";
         $message="Tidak dapat memvalidasi data.";
         if ($validator->fails()) {
-            return response()->json(['status'=> $status, 'messages'=>$message, 'data'=> '']);
+            return response()->json(['status'=> $status, 'messages'=>$message, 'data'=> $kosong]);
         }
        
         $users=Users::updateOrCreate([
@@ -143,7 +169,7 @@ class UsersController extends Controller
                 'users_id' => $users->id,
                     'debit' => $request->debit,
                     'credit' => $request->credit,
-                    'saldo' => $saldo,
+                    'saldo' => 0,
                     'from' => $request->from,
                     'dest' => $request->dest,
                     'desc' => $request->desc,
@@ -153,6 +179,7 @@ class UsersController extends Controller
         }else{
             $status='failed';
             $message='Data tidak berhasil disimpan';
+            return response()->json(['status'=> $status, 'messages'=>$message, 'data'=>$kosong]);
         }
         //return view('layouts.employees.index',['success' => 'Post created successfully.']);
         return response()->json(['status'=> $status, 'messages'=>$message, 'data'=> $users]);
