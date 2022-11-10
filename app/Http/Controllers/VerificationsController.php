@@ -100,16 +100,39 @@ class VerificationsController extends Controller
         $message="Berhasil memvalidasi data.";
         return response()->json(['status'=> $status, 'messages'=>$message, 'data'=>""]);
     }
+    public function check_verif(Request $request){
+        $validator = Validator::make($request->all(), [
+            'users_id' => 'required',
+        ]);
+        $status="failed";
+        $message="Tidak dapat memvalidasi data.";
+        if ($validator->fails()) {
+            return response()->json(['status'=> $status, 'messages'=>$message]);
+        }
+        $hasupload = Verifications::find($request->users_id)->count();
+        if($hasupload>0){
+            $status="success";
+            $message="Sudah pengajuan";
+            return response()->json(['status'=> $status, 'messages'=>$message]);
+        }
+    }
     public function verif(Request $request){
         $validator = Validator::make($request->all(), [
             'users_id' => 'required',
             'desc' => 'required',
             'value' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
         ]);
+        $kosong=array(
+            'users_id' => 1,
+            'desc' => "kosong",
+            'value' => "kosong",
+            'created_at' => '-000001-11-30T00:00:00.000000Z',
+            'updated_at' => '-000001-11-30T00:00:00.000000Z', 
+        );
         $status="failed";
         $message="Tidak dapat memvalidasi data.";
         if ($validator->fails()) {
-            return response()->json(['status'=> $status, 'messages'=>$message, 'data'=> '']);
+            return response()->json(['status'=> $status, 'messages'=>$message, 'data'=> $kosong]);
         }
         $path_logo = time().'.logo.'.$request->value->extension();
         // Public Folder
@@ -130,6 +153,13 @@ class VerificationsController extends Controller
         }else{
             $status='failed';
             $message='Data tidak berhasil disimpan';
+            $verifications=array(
+                'users_id' => 1,
+                'desc' => "kosong",
+                'value' => "kosong",
+                'created_at' => '-000001-11-30T00:00:00.000000Z',
+                'updated_at' => '-000001-11-30T00:00:00.000000Z', 
+            );
         }
         return response()->json(['status'=> $status, 'messages'=>$message, 'data'=> $verifications]);
     }

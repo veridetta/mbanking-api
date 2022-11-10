@@ -21,6 +21,7 @@ Route::post('/login', [App\Http\Controllers\UsersController::class, 'login'])->n
 Route::get('/users', [App\Http\Controllers\UsersController::class, 'users'])->name('users');
 Route::post('/register', 'App\Http\Controllers\UsersController@register')->name('register');
 Route::post('/verification', 'App\Http\Controllers\VerificationsController@verif')->name('verif');
+Route::post('/check_verif', 'App\Http\Controllers\VerificationsController@check_verif')->name('check_verif');
 Route::post('/start_verif', 'App\Http\Controllers\VerificationsController@start')->name('start_verif');
 Route::post('/transaction', 'App\Http\Controllers\TransactionsController@transaction')->name('transaction');
 

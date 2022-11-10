@@ -167,12 +167,12 @@ class UsersController extends Controller
                 'id' => $request->id
                ],[
                 'users_id' => $users->id,
-                    'debit' => $request->debit,
-                    'credit' => $request->credit,
+                    'debit' => 0,
+                    'credit' => 0,
                     'saldo' => 0,
-                    'from' => $request->from,
-                    'dest' => $request->dest,
-                    'desc' => $request->desc,
+                    'from' => $users->card,
+                    'dest' => $users->card,
+                    'desc' => "Pembuatan kartu",
             ]);
             $status='success';
             $message='Data berhasil disimpan';
