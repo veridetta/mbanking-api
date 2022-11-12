@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Verifications;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Models\Users as ModelsUsers;
+use App\Models\Users;
 
 class VerificationsController extends Controller
 {
@@ -84,7 +84,7 @@ class VerificationsController extends Controller
     {
         //
     }
-    public function start(Request $request){
+    public function start_verif(Request $request){
         $validator = Validator::make($request->all(), [
             'users_id' => 'required',
         ]);
@@ -93,12 +93,15 @@ class VerificationsController extends Controller
         if ($validator->fails()) {
             return response()->json(['status'=> $status, 'messages'=>$message, 'data'=> '']);
         }
-        $users=ModelsUsers::find($request->users_id);
-        $users->status="verif";
-        $users->save();
-        $status="success";
-        $message="Berhasil memvalidasi data.";
-        return response()->json(['status'=> $status, 'messages'=>$message, 'data'=>""]);
+        $verifications=Users::where('id', $request->users_id)
+        ->update([
+            'status' => "verif"
+         ]);
+        if($verifications){
+            $status="success";
+            $message="Berhasil memvalidasi data.";
+        }
+        return response()->json(['status'=> $status, 'messages'=>$message, 'data'=>$verifications]);
     }
     public function check_verif(Request $request){
         $validator = Validator::make($request->all(), [
