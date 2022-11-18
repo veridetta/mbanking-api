@@ -126,7 +126,6 @@ class TransactionsController extends Controller
                 }else{
                     $sal2=0;
                 }
-                
                 if($request->credit < $sal2){
                     $verifications=Transactions::updateOrCreate([
                         'id' => $request->id
@@ -141,7 +140,7 @@ class TransactionsController extends Controller
                     ]);
                     $status='success';
                      $message='Data berhasil disimpan';
-                    $saldo2 = $sal2+$request->credit;
+                    $saldo2 = $sal2-$request->credit;
                     $verifications=Transactions::create([
                     'users_id' => $users->id,
                     'debit' => $request->credit,
